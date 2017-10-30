@@ -26,7 +26,7 @@ public class FileModel {
 
     /*--------------GETTERS--------------------*/
 
-    String getFileName() {
+    public String getFileName() {
         return fileName;
     }
 
@@ -34,7 +34,7 @@ public class FileModel {
         return filePath;
     }
 
-    String getContent() {
+    public String getContent() {
         return content;
     }
 
@@ -44,15 +44,15 @@ public class FileModel {
 
     /*-----------SETTERS-----------------*/
 
-    void setFileName(String fileName) {
+    public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
-    void setContent(String content) {
+    public void setContent(String content) {
         this.content = content;
     }
 
-    void setFilePath(String filePath) {
+    public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
 

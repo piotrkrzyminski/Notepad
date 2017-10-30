@@ -37,10 +37,24 @@
                <MenuItem mnemonicParsing="false" onAction="#removeTab" text="Close" />
            </Menu>
            <Menu mnemonicParsing="false" text="Edit">
-               <MenuItem mnemonicParsing="false" text="Delete" />
+               <MenuItem mnemonicParsing="false" onAction="#trimTextAreaContent" text="Trim white spaces" />
+            <MenuItem mnemonicParsing="false" onAction="#setReadOnly" text="Set read only" />
            </Menu>
-           <Menu mnemonicParsing="false" text="Help">
-               <MenuItem mnemonicParsing="false" text="About" />
+           <Menu mnemonicParsing="false" text="View">
+               <MenuItem mnemonicParsing="false" onAction="#switchFullScreenMode" text="Toggle full screen mode" />
+               <Menu mnemonicParsing="false" text="Zoom">
+                   <MenuItem mnemonicParsing="false" onAction="#zoomIn" text="Zoom In" />
+                   <MenuItem mnemonicParsing="false" onAction="#zoomOut" text="Zoom Out" />
+                   <MenuItem mnemonicParsing="false" onAction="#restoreZoom" text="Restore default zoom" />
+               </Menu>
+               <MenuItem mnemonicParsing="false" onAction="#wrapText" text="Wrap text">
+                   <accelerator>
+                       <KeyCodeCombination alt="UP" code="F11" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                   </accelerator>
+               </MenuItem>
+           </Menu>
+           <Menu mnemonicParsing="false" text="Settings">
+               <MenuItem mnemonicParsing="false" text="Preferences" />
            </Menu>
        </MenuBar>
    </top>
@@ -97,26 +111,39 @@
                   <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                </HBox.margin>
             </Button>
-            <Button layoutX="157.0" layoutY="20.0" mnemonicParsing="false" onAction="#increseFontSize" prefHeight="30.0" prefWidth="30.0">
+            <Button layoutX="157.0" layoutY="20.0" mnemonicParsing="false" onAction="#zoomIn" prefHeight="30.0" prefWidth="30.0">
                <tooltip>
                   <Tooltip text="Increse font size" />
                </tooltip>
                <graphic>
                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                       <Image url="@../images/increseFontSize.png" />
+                       <Image url="@../images/zoomIn.png" />
                    </ImageView>
                </graphic>
                <HBox.margin>
                   <Insets bottom="10.0" left="50.0" right="5.0" top="10.0" />
                </HBox.margin>
             </Button>
-            <Button layoutX="209.0" layoutY="20.0" mnemonicParsing="false" onAction="#decreseFontSize" prefHeight="30.0" prefWidth="30.0">
+            <Button layoutX="209.0" layoutY="20.0" mnemonicParsing="false" onAction="#zoomOut" prefHeight="30.0" prefWidth="30.0">
                <tooltip>
                   <Tooltip text="Decrese font size" />
                </tooltip>
                <graphic>
                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                       <Image url="@../images/decreseFontSize.png" />
+                       <Image url="@../images/zoomOut.png" />
+                   </ImageView>
+               </graphic>
+               <HBox.margin>
+                  <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button layoutX="294.0" layoutY="20.0" mnemonicParsing="false" onAction="#restoreZoom" prefHeight="30.0" prefWidth="30.0">
+               <tooltip>
+                  <Tooltip text="Resore default zoom" />
+               </tooltip>
+               <graphic>
+                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                       <Image url="@../images/restoreZoom.png" />
                    </ImageView>
                </graphic>
                <HBox.margin>

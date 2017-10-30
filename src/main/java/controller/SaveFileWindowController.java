@@ -3,7 +3,6 @@ package controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
-import model.NotepadModel;
 
 public class SaveFileWindowController {
     @FXML
@@ -12,7 +11,6 @@ public class SaveFileWindowController {
     @FXML
     public void yesButton() {
         Stage stage = (Stage) yesButton.getScene().getWindow();
-        NotepadModel.getInstance().setSaving();
         stage.close();
     }
 

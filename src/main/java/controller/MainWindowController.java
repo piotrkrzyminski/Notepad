@@ -1,12 +1,23 @@
 package controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Tab;
+import javafx.fxml.Initializable;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
-import model.*;
+import javafx.stage.Stage;
+import model.FileModel;
+import model.Icons;
+import model.NotepadModel;
+import model.TabModel;
+import services.FileOperation;
+import services.SaveAsService;
+import services.SaveService;
 
-public class MainWindowController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+
+public class MainWindowController implements Initializable {
     @FXML
     private TabPane tabPane;
     @FXML
@@ -14,8 +25,7 @@ public class MainWindowController {
 
     private FileOperation fileOperation;
 
-
-    private NotepadModel notepadModel = NotepadModel.getInstance();
+    private static Stage window;
 
     /**
      * Add one tab on startup
@@ -24,36 +34,41 @@ public class MainWindowController {
      * Every time tab is changed load Text Area from active Tab
      */
     @FXML
-    public void initialize() {
-        notepadModel.setTabPane(tabPane);
-
-        notepadModel.createTab();
-
+    public void initialize(URL location, ResourceBundle resources) {
+        TabModel.setTabPane(tabPane);
+        NotepadModel.setTabPane(tabPane);
+        TabModel tabModel = new TabModel();
     }
 
-    /**
-     * Add new tab to TabPane
-     */
     @FXML
     public void createTab() {
-        notepadModel.createTab();
+        TabModel tabModel = new TabModel();
     }
 
     /**
-     * if tabPane has some cards remove from TabPane active tab
+     * Removes selected Tab on close request
+     * If Tab Pane is empty after remove add new card
      */
     @FXML
     public void removeTab() {
-        Tab tab = getSelectedTab();
-        notepadModel.removeTab(tab);
+        TabModel tabModel = (TabModel) tabPane.getSelectionModel().getSelectedItem();
+        Stage window = (Stage) tabPane.getScene().getWindow();
+
+        if(!tabModel.getFileModel().isSaved() && !tabModel.getTextArea().getText().isEmpty())
+            DisplayDialogWindow.displayDialog(window);
+
+        tabPane.getTabs().remove(tabModel);
+
+        if(tabPane.getTabs().isEmpty()) {
+            FileModel.resetIndex();
+            createTab();
+        }
+
     }
 
-    /**
-     * Get TabModel by active Tab and save tab text area content to file
-     */
     @FXML
     public void save() {
-        TabModel tabModel = NotepadModel.getInstance().getTabModel(getSelectedTab());
+        TabModel tabModel = (TabModel) tabPane.getSelectionModel().getSelectedItem();
         FileModel fileModel = tabModel.getFileModel();
 
         if(fileModel.getFilePath().equals(""))
@@ -61,7 +76,7 @@ public class MainWindowController {
         else
             fileOperation = new SaveService();
 
-        notepadModel.saveFile(fileOperation);
+        NotepadModel.saveFile(tabModel, fileOperation);
     }
 
     /**
@@ -69,25 +84,46 @@ public class MainWindowController {
      */
     @FXML
     public void open() {
-        Tab tab = getSelectedTab();
-        NotepadModel.getInstance().openFile();
-        NotepadModel.getInstance().getTabModel(getSelectedTab()).changeTabIcon(Icons.SAVED);
-        TabModel tabModel = NotepadModel.getInstance().getTabModel(tab);
+        TabModel tabModel = (TabModel) tabPane.getSelectionModel().getSelectedItem();
+        NotepadModel.openFile();
+        tabModel.changeTabIcon(Icons.SAVED);
         tabModel.getFileModel().setSaved(true);
     }
 
     @FXML
-    public void increseFontSize() {
-        NotepadModel.getInstance().increseFontSize(borderPane);
+    public void zoomIn() {
+        NotepadModel.zoomIn(borderPane);
     }
 
     @FXML
-    public void decreseFontSize() {
-        NotepadModel.getInstance().decreseFontSize(borderPane);
+    public void zoomOut() {
+        NotepadModel.zoomOut(borderPane);
     }
 
+    @FXML
+    public void restoreZoom() {
+        NotepadModel.restoreZoom(borderPane);
+    }
 
-    private Tab getSelectedTab() {
-        return tabPane.getSelectionModel().getSelectedItem();
+    @FXML void switchFullScreenMode() {
+        NotepadModel.switchFullScreenMode();
+    }
+
+    @FXML
+    public void setReadOnly() {
+        TabModel tabModel = (TabModel) tabPane.getSelectionModel().getSelectedItem();
+        tabModel.setReadOnly();
+    }
+
+    @FXML
+    public void trimTextAreaContent() {
+        TabModel tabModel = (TabModel) tabPane.getSelectionModel().getSelectedItem();
+        tabModel.trim();
+    }
+
+    @FXML
+    public void wrapText() {
+        TabModel tabModel = (TabModel) tabPane.getSelectionModel().getSelectedItem();
+        tabModel.wrapText();
     }
 }
