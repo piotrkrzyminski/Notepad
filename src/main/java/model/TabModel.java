@@ -1,8 +1,8 @@
 package model;
 
-import com.sun.javafx.scene.control.behavior.TabPaneBehavior;
-import com.sun.javafx.scene.control.skin.TabPaneSkin;
-import controller.DisplayDialogWindow;
+import controller.SaveFileWindow;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
@@ -13,6 +13,8 @@ import services.FileOperation;
 import services.SaveAsService;
 import services.SaveService;
 
+import java.io.IOException;
+
 /**
  * Created on 25.10.2017 by Piotr Krzyminski
  *
@@ -22,10 +24,6 @@ public class TabModel extends Tab {
     private static TabPane tabPane = NotepadModel.getTabPane();
     private TextArea textArea;
 
-    private String tabName;
-
-    private boolean saving;
-
     private FileModel fileModel;
 
     /**
@@ -33,48 +31,53 @@ public class TabModel extends Tab {
      */
     public TabModel() {
         fileModel = new FileModel();
-        this.tabName = fileModel.getFileName();
         textArea = createTextArea();
         this.setContent(textArea);
         this.setText(fileModel.getFileName());
         changeTabIcon(Icons.SAVED);
 
         this.setOnCloseRequest(event -> {
-            if(tabPane.getTabs().isEmpty()) {
-                if(!fileModel.isSaved() && textArea.getText().isEmpty())
-                    DisplayDialogWindow.displayDialog(NotepadModel.getWindow());
+            Stage window = (Stage)tabPane.getScene().getWindow();
+            if(!fileModel.isSaved()) {
+                SaveFileWindow saveFileWindow = new SaveFileWindow();
 
-               /*Display Save File Dialog Window and wait for decision*/
-                if(!fileModel.isSaved() && !textArea.getText().isEmpty())
-                    DisplayDialogWindow.displayDialog((Stage)tabPane.getScene().getWindow());
-
-                /*
-                 * if user selected YES button perform file saving and set flag to false
-                 * if file was saved before perform quick save else normal save operation
-                 * File was saved ealier if File Model path variable not equals ""
-                 */
-                if(saving) {
-                    FileOperation fileOperation;
-
-                    if(fileModel.getFilePath().equals(""))
-                        fileOperation = new SaveAsService(); //Normal saving
-                    else
-                        fileOperation = new SaveService(); //Quick saving
-
-                    NotepadModel.saveFile(this,fileOperation); //perform file saving
-                    saving = false; //set user decision about saving back to false
+                try {
+                    saveFileWindow.display(window);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+            }
 
-                FileModel.resetIndex();
-                tabPane.getTabs().add(new TabModel());
+            if(NotepadModel.saving) {
+                FileOperation fileOperation;
+
+                if(fileModel.getFilePath().equals(""))
+                    fileOperation = new SaveAsService();
+                else
+                    fileOperation = new SaveService();
+
+                NotepadModel.saveFile(this,fileOperation);
+                NotepadModel.saving = false;
+            }
+
+            if(!tabPane.getTabs().isEmpty()) {
+                tabPane.getTabs().remove(this);
             }
         });
-
-        tabPane.getTabs().add(this);
     }
 
-    public void setName(String name) {
-        this.setText(name);
+    public void close() {
+        EventHandler<Event> handler = this.getOnCloseRequest();
+        if (null != handler) {
+            handler.handle(null);
+        } else {
+            tabPane.getTabs().remove(this);
+        }
+
+        if(tabPane.getTabs().isEmpty()){
+            FileModel.resetIndex();
+            tabPane.getTabs().add(new TabModel());
+        }
     }
 
     /**
@@ -117,6 +120,9 @@ public class TabModel extends Tab {
         return textArea;
     }
 
+    /**
+     * Enable or disable read only text area option
+     */
     public void setReadOnly() {
         if(textArea.isEditable())
             textArea.setEditable(false);
@@ -124,23 +130,21 @@ public class TabModel extends Tab {
             textArea.setEditable(true);
     }
 
+    /**
+     * delete white spaces in the beginning and end of text in text area
+     */
     public void trim() {
         String text = textArea.getText().trim();
         textArea.setText(text);
     }
 
+    /**
+     * enable or disable wrap text option
+     */
     public void wrapText() {
         if(textArea.isWrapText())
             textArea.setWrapText(false);
         else
             textArea.setWrapText(true);
-    }
-
-    @Override
-    public String toString() {
-        return "File name: "+fileModel.getFileName()+"\n"+
-                "File path: "+fileModel.getFilePath()+"\n" +
-                "File content: "+fileModel.getContent()+"\n"+
-                "Is file saved: "+fileModel.isSaved()+"\n\n";
     }
 }

@@ -1,22 +1,24 @@
 package controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import model.NotepadModel;
 
 public class SaveFileWindowController {
-    @FXML
-    private Button yesButton;
+    private Stage window;
 
     @FXML
     public void yesButton() {
-        Stage stage = (Stage) yesButton.getScene().getWindow();
-        stage.close();
+        NotepadModel.saving = true;
+        window.close();
     }
 
     @FXML
     public void noButton() {
-        Stage stage = (Stage) yesButton.getScene().getWindow();
-        stage.close();
+        window.close();
+    }
+
+    public void setWindow(Stage window) {
+        this.window = window;
     }
 }

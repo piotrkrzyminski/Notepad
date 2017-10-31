@@ -12,14 +12,14 @@ import java.io.IOException;
  * Created on 29.10.2017 by Piotr Krzyminski
  * Read text from File passed by parameter and assign fields in FileModel
  */
-public class ReadService {
+class ReadService {
     /**
      * Read text and pass values to File Model
      * @param tabModel TabModel conained File Model where fields will by assignes
      * @param file Representation of readed file
      * @throws IOException Throw exception when reading ends with error
      */
-    public static void read(TabModel tabModel, File file) throws IOException {
+    static void read(TabModel tabModel, File file) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 
         FileModel fileModel = tabModel.getFileModel();

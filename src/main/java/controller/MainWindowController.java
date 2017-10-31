@@ -25,7 +25,7 @@ public class MainWindowController implements Initializable {
 
     private FileOperation fileOperation;
 
-    private static Stage window;
+    private Stage window;
 
     /**
      * Add one tab on startup
@@ -37,12 +37,12 @@ public class MainWindowController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         TabModel.setTabPane(tabPane);
         NotepadModel.setTabPane(tabPane);
-        TabModel tabModel = new TabModel();
+        tabPane.getTabs().add(new TabModel());
     }
 
     @FXML
     public void createTab() {
-        TabModel tabModel = new TabModel();
+        tabPane.getTabs().add(new TabModel());
     }
 
     /**
@@ -52,18 +52,7 @@ public class MainWindowController implements Initializable {
     @FXML
     public void removeTab() {
         TabModel tabModel = (TabModel) tabPane.getSelectionModel().getSelectedItem();
-        Stage window = (Stage) tabPane.getScene().getWindow();
-
-        if(!tabModel.getFileModel().isSaved() && !tabModel.getTextArea().getText().isEmpty())
-            DisplayDialogWindow.displayDialog(window);
-
-        tabPane.getTabs().remove(tabModel);
-
-        if(tabPane.getTabs().isEmpty()) {
-            FileModel.resetIndex();
-            createTab();
-        }
-
+        tabModel.close();
     }
 
     @FXML
@@ -125,5 +114,9 @@ public class MainWindowController implements Initializable {
     public void wrapText() {
         TabModel tabModel = (TabModel) tabPane.getSelectionModel().getSelectedItem();
         tabModel.wrapText();
+    }
+
+    public void setWindow(Stage window) {
+        this.window = window;
     }
 }

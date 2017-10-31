@@ -8,5 +8,4 @@ import javafx.scene.image.Image;
 public class Icons {
     public static final Image UNSAVED = new Image(String.valueOf(Icons.class.getResource("/images/unsavedTabIcon.png")));
     public static final Image SAVED = new Image(String.valueOf(Icons.class.getResource("/images/savedTabIcon.png")));
-    public static final Image NEWFILE = new Image(String.valueOf(Icons.class.getResource("/images/newFile.png")));
 }

@@ -2,7 +2,6 @@ package model;
 
 import javafx.scene.Node;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import services.FileOperation;
 import services.OpenService;
@@ -16,15 +15,15 @@ import java.io.IOException;
  */
 public class NotepadModel  {
     private static TabPane tabPane;
-    private static BorderPane borderPane;
-    private static Stage window;
+
+    public static boolean saving; // if file needs to be saved
 
     private static int fontSize = 14;
 
     /**
      * Perform saving operation of fileOperation type on Tab Model in parameter
-     * @param tabModel
-     * @param fileOperation
+     * @param tabModel Selected Tab
+     * @param fileOperation Type of saving operation
      */
     public static void saveFile(TabModel tabModel, FileOperation fileOperation) {
         FileModel fileModel = tabModel.getFileModel();
@@ -59,7 +58,8 @@ public class NotepadModel  {
             e.printStackTrace();
         }
 
-        FileModel fileModel = tabModel.getFileModel();
+        FileModel fileModel;
+        fileModel = tabModel.getFileModel();
 
         tabModel.setText(fileModel.getFileName()); //set head text of Tab
         tabModel.getTextArea().setText(fileModel.getContent()); //set content of Text Area
@@ -70,10 +70,9 @@ public class NotepadModel  {
         tabPane = tp;
     }
 
-    public static TabPane getTabPane() {
+    static TabPane getTabPane() {
         return tabPane;
     }
-    public static Stage getWindow() { return window; }
 
     /**
      * Change Node font style by 2. The biggest value is 60
@@ -102,10 +101,13 @@ public class NotepadModel  {
      * @param node Element that font must be changed
      */
     public static void restoreZoom(Node node) {
-        fontSize = 16;
+        fontSize = 14;
         node.setStyle("-fx-font-size:"+fontSize);
     }
 
+    /**
+     * Enable or disable full screen
+     */
     public static void switchFullScreenMode() {
         Stage window = (Stage)tabPane.getScene().getWindow();
         if(window.isFullScreen())
