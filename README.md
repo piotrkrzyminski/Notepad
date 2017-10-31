@@ -8,5 +8,3 @@ Features:
 4. Full screen mode
 5. Wraping text
 6. Enable/disable read only mode
-
-More features will be added soon
